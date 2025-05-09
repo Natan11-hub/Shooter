@@ -1,56 +1,54 @@
-﻿using Services;
+﻿using DefaultNamespace.States;
+using Services;
 using UnityEngine;
 
 namespace Unit
 {
     public class PlayerController : MonoBehaviour
     {
-        [SerializeField] private UnitView _uniView;
+        //SOundManaged ССЫЛКУ СЮДА БЛЯТЬ и Ссылку на аниматор
+        [SerializeField] private UnitView _unitView;
         [SerializeField] private InputService _inputService;
+        [SerializeField] private GameObject checkGround;
         private Rigidbody _rigidbody;
+        private LayerMask _mask;
 
         public void Awake()
         {
+            _mask = LayerMask.GetMask("Player");
+            StateMachine stateMachine = new StateMachine();
+            stateMachine.InitializeState(new StandingState(this, _inputService, stateMachine));
             _rigidbody = GetComponent<Rigidbody>();
         }
 
-        public void Update()
+        public void Move(Vector3 movement)
         {
-            HandleMovement();
-            HandleActions();
+            _rigidbody.velocity = movement;
         }
 
-        public void HandleMovement()
+        public void Standing()
         {
-            var movement = _inputService.CheckMove();
-
-            _uniView.transform.Translate(movement * Time.deltaTime);
+            _rigidbody.velocity = Vector3.zero;
         }
 
-        public void HandleActions()
+        public void Jump()
         {
-            if (_inputService.IsAttacked())
-                HandleAttack();
-
-            if (_inputService.IsJumped())
-                HandleJump();
-            if (_inputService.IsReloaded())
-                HandleReload();
+            _rigidbody.AddForce(Vector3.up, ForceMode.Impulse);
         }
 
-        private void HandleReload()
+        public bool IsGrounded()
         {
-            //:b
+            return Physics.OverlapSphere(checkGround.transform.position, 0.1f, _mask) != null;
         }
 
-        private void HandleAttack()
+        public void Shoot()
         {
-            //.|.
+            
         }
 
-        public void HandleJump()
+        public void Ducking()
         {
-            _uniView.Jump(_rigidbody);
+            
         }
     }
 }
