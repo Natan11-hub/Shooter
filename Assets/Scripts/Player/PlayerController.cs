@@ -39,12 +39,8 @@ namespace Unit
         public bool IsGrounded()
         {
             Collider[] colliders = Physics.OverlapSphere(checkGround.transform.position, 0.1f, _mask);
-            foreach (var collider in colliders)
-            {
-                if (collider.gameObject.layer != _mask)
-                    return true;
-            }
-
+            if (colliders.Length > 0)
+                return true;
             return false;
         }
 
