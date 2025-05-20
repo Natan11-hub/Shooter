@@ -4,26 +4,37 @@ using UnityEngine;
 
 namespace Unit
 {
-    public class PlayerController : MonoBehaviour
+    public class UnitController : MonoBehaviour
     {
         //SOundManaged ССЫЛКУ СЮДА БЛЯТЬ и Ссылку на аниматор
-        [SerializeField] private UnitView _unitView;
-        [SerializeField] private InputService _inputService;
         [SerializeField] private GameObject checkGround;
+        [SerializeField] private float _maxSpeed;
+        [SerializeField] private int _maxHealth;
+        [SerializeField] private LayerMask _mask;
+
+        private float _currentHealth;
         private Rigidbody _rigidbody;
-        private LayerMask _mask;
+        private StateMachine _stateMachine;
+
+        private bool _isControlledByPlayer;
+
+        public float MaxHealth => _maxHealth;
+        public float CurrentHealth => _currentHealth;
 
         public void Awake()
         {
-            _mask = LayerMask.GetMask("Player");
             StateMachine stateMachine = new StateMachine();
-            stateMachine.InitializeState(new StandingState(this, _inputService, stateMachine));
-            _rigidbody = GetComponent<Rigidbody>();
+
+            IUnitInput unitInput = _isControlledByPlayer
+                ? new PlayerUnitInput(FindAnyObjectByType<InputService>())
+                : new AIUnitInput();
+
+            stateMachine.InitializeState(new StandingState(this, unitInput, stateMachine));
         }
 
         public void Move(Vector3 movement)
         {
-            _rigidbody.velocity = movement;
+            _rigidbody.velocity = movement * _maxSpeed;
         }
 
         public void Standing()
@@ -46,12 +57,17 @@ namespace Unit
 
         public void Shoot()
         {
-            
+
         }
 
         public void Ducking()
         {
+
+        }
+
+        public void TakeDamage(float damage)
+        {
             
         }
-    }
+}
 }

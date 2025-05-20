@@ -1,11 +1,14 @@
-﻿using Services;
+﻿using System.Numerics;
+using Services;
 using Unit;
+using Vector3 = UnityEngine.Vector3;
 
 namespace DefaultNamespace.States
 {
     public class MovingState : PlayerControllerState
     {
-        public MovingState(PlayerController playerController, InputService inputService, StateMachine stateMachine) : base(playerController, stateMachine)
+        private IUnitInput _unitInput;
+        public MovingState(UnitController unitController, IUnitInput unitInput, StateMachine stateMachine) : base(unitController, stateMachine)
         {
         }
 
@@ -21,7 +24,10 @@ namespace DefaultNamespace.States
 
         public override void Update()
         {
-            
+            if (unitController.IsGrounded())
+                stateMachine.ChangeState(new JumpState(unitController, _unitInput, stateMachine));
+            if(_unitInput.MoveDirection == Vector3.zero)
+                stateMachine.ChangeState(new StandingState(unitController, _unitInput, stateMachine));
         }
     }
 }

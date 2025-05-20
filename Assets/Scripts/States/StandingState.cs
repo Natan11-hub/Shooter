@@ -6,9 +6,9 @@ namespace DefaultNamespace.States
 {
     public class StandingState : PlayerControllerState
     {
-        public InputService inputService;
+        private readonly IUnitInput _unitInput;
         
-        public StandingState(PlayerController playerController,InputService inputService, StateMachine stateMachine) : base(playerController, stateMachine)
+        public StandingState(UnitController unitController, IUnitInput unitInput, StateMachine stateMachine) : base(unitController, stateMachine)
         {
         }
 
@@ -24,15 +24,15 @@ namespace DefaultNamespace.States
 
         public override void Update()
         {
-            _playerController.Standing();
-            
-            var movement = inputService.CheckMove();
-            var jump = inputService.IsJumped();
+            unitController.Standing();
+
+            var movement = _unitInput.MoveDirection;
+            var jump = _unitInput.IsJumped;
             
             if(movement != Vector3.zero)
-                stateMachine.ChangeState(new MovingState(_playerController,inputService, stateMachine));
+                stateMachine.ChangeState(new MovingState(unitController, _unitInput, stateMachine));
             if(jump)
-                stateMachine.ChangeState(new JumpState(_playerController, inputService, stateMachine));
+                stateMachine.ChangeState(new JumpState(unitController, _unitInput, stateMachine));
         }
     }
 }

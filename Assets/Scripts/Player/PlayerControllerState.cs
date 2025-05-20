@@ -3,10 +3,10 @@ using UnityEngine;
 
 public abstract class PlayerControllerState : State
 {
-    protected PlayerController _playerController;
+    protected UnitController unitController;
     
-    protected PlayerControllerState(PlayerController playerController, StateMachine stateMachine) : base(stateMachine)
+    protected PlayerControllerState(UnitController unitController, StateMachine stateMachine) : base(stateMachine)
     {
-        _playerController = playerController;
+        this.unitController = unitController;
     }
 }

@@ -22,7 +22,7 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision other)
     {
-        var unit = other.gameObject.GetComponent<UnitView>();
+        var unit = other.gameObject.GetComponent<UnitController>();
 
         if (unit != null)
             unit.TakeDamage(_damage);

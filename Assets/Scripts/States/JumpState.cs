@@ -5,14 +5,14 @@ namespace DefaultNamespace.States
 {
     public class JumpState : PlayerControllerState
     {
-        private InputService _inputService;
-        public JumpState(PlayerController playerController,InputService inputService ,StateMachine stateMachine) : base(playerController, stateMachine)
+        private IUnitInput _unitInput;
+        public JumpState(UnitController unitController, IUnitInput unitInput,StateMachine stateMachine) : base(unitController, stateMachine)
         {
         }
 
         public override void Enter()
         {
-            _playerController.Jump();
+            unitController.Jump();
         }
 
         public override void Exit()
@@ -22,8 +22,8 @@ namespace DefaultNamespace.States
 
         public override void Update()
         {
-            if(!_playerController.IsGrounded() && !_inputService.IsJumped())
-                stateMachine.ChangeState(new StandingState(_playerController, _inputService, stateMachine));
+            if(!unitController.IsGrounded() && !_unitInput.IsJumped)
+                stateMachine.ChangeState(new StandingState(unitController, _unitInput, stateMachine));
         }
     }
 }
